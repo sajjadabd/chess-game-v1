@@ -59,12 +59,21 @@ div.row:nth-child(even) div.cellContainer:nth-child(even) {
 }
 
 
-
+/*
 div.cell:not([data-color='w']):not(.highlight):not(.active):hover {
     background-color : rgba(226, 226, 226, 0.5);
 }
 
 div.cell:not([data-color='w']):active {
+    background-color : rgba(196, 194, 194, 0.8);
+}
+*/
+
+div.cell:not(.highlight):not(.active):hover {
+    background-color : rgba(226, 226, 226, 0.5);
+}
+
+div.cell:active {
     background-color : rgba(196, 194, 194, 0.8);
 }
 
