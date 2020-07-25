@@ -1,11 +1,24 @@
 $(document).ready( function () {
 
+    console.log(myColor);
+
+    if( myColor == 'b' ) {
+        opponentColor = 'w';
+    } else if( myColor == 'w' ) {
+        opponentColor = 'b';
+    }
+	
+	let socket = io();
+
+    //socket.emit('new-user', { room : room } );
+
 
 	class PawnPiece_Black {
         constructor() {
 			this.first_move = true;
 			this.data_number = 9823;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'pawn';
 		}
 	}
 	
@@ -13,7 +26,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9818;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'king';
 		}
 	}
 	
@@ -21,7 +35,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9819;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'queen';
 		}
 	}
 	
@@ -30,7 +45,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9820;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'rook';
 		}
 	}
 	
@@ -39,7 +55,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9821;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'bishop';
 		}
 	}
 	
@@ -47,7 +64,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9822;
-			this.data_color = 'b';
+            this.data_color = 'b';
+            this.data_name = 'knight';
 		}
 	}
 	
@@ -61,7 +79,8 @@ $(document).ready( function () {
         constructor() {
 			this.first_move = true;
 			this.data_number = 9817;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'pawn';
 		}
 	}
 	
@@ -69,7 +88,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9812;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'king';
 		}
 	}
 	
@@ -77,7 +97,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9813;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'queen';
 		}
 	}
 	
@@ -86,7 +107,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9814;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'rook';
 		}
 	}
 	
@@ -95,7 +117,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9815;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'bishop';
 		}
 	}
 	
@@ -103,7 +126,8 @@ $(document).ready( function () {
         constructor() {
             this.first_move = true;
 			this.data_number = 9816;
-			this.data_color = 'w';
+            this.data_color = 'w';
+            this.data_name = 'knight';
 		}
 	}
 	
@@ -295,32 +319,62 @@ $(document).ready( function () {
         let isItFirstMove = chessBoard[y][x].first_move;
         //console.log(isItFirstMove);
 
-        pawn.movementTop.map( (value) => {
-            //console.log(`#p_/e|b/_${y-value.j}_${x-value.i}`);
-            let selected = $(`#p_${y-value.j}_${x-value.i}`);
-            ///console.log(selected); 
-            if( !isItFirstMove && Math.abs(value.j) >= 2 ) {
-                //console.log('1 happen');
-            } else if( value.i != 0 ) {
-                let data_number = selected.children().attr('data-number');
-                let data_color = selected.children().attr('data-color');
-                if( data_number != '0' && data_color != 'b' ) {
-                    selected.children().addClass('highlight');
+        if( myColor == 'b' ) {
+            pawn.movementTop.map( (value) => {
+                //console.log(`#p_/e|b/_${y-value.j}_${x-value.i}`);
+                let selected = $(`#p_${y-value.j}_${x-value.i}`);
+                ///console.log(selected); 
+                if( !isItFirstMove && Math.abs(value.j) >= 2 ) {
+                    //console.log('1 happen');
+                } else if( value.i != 0 ) {
+                    let data_number = selected.children().attr('data-number');
+                    let data_color = selected.children().attr('data-color');
+                    if( data_number != '0' && data_color != myColor ) {
+                        selected.children().addClass('highlight');
+                    } else {
+                        
+                    }
+                    //console.log('2 happen');
                 } else {
-                    
+                    let data_number = selected.children().attr('data-number');
+                    //console.log(data_number);
+                    if( data_number == '0' ) {
+                        selected.children().addClass('highlight');
+                    } else {
+                        
+                    }
+                    //console.log('3 happen');
                 }
-                //console.log('2 happen');
-            } else {
-                let data_number = selected.children().attr('data-number');
-                //console.log(data_number);
-                if( data_number == '0' ) {
-                    selected.children().addClass('highlight');
+            });
+        } else if ( myColor == 'w' ) {
+            pawn.movementDown.map( (value) => {
+                //console.log(`#p_/e|b/_${y-value.j}_${x-value.i}`);
+                let selected = $(`#p_${y-value.j}_${x-value.i}`);
+                ///console.log(selected); 
+                if( !isItFirstMove && Math.abs(value.j) >= 2 ) {
+                    //console.log('1 happen');
+                } else if( value.i != 0 ) {
+                    let data_number = selected.children().attr('data-number');
+                    let data_color = selected.children().attr('data-color');
+                    if( data_number != '0' && data_color != myColor ) {
+                        selected.children().addClass('highlight');
+                    } else {
+                        
+                    }
+                    //console.log('2 happen');
                 } else {
-                    
+                    let data_number = selected.children().attr('data-number');
+                    //console.log(data_number);
+                    if( data_number == '0' ) {
+                        selected.children().addClass('highlight');
+                    } else {
+                        
+                    }
+                    //console.log('3 happen');
                 }
-                //console.log('3 happen');
-            }
-        });
+            });
+        }
+        
     }
 
 
@@ -329,7 +383,7 @@ $(document).ready( function () {
             let selected = $(`#p_${y-value.j}_${x-value.i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if( data_color != 'b' ) {
+            if( data_color != myColor ) {
                 selected.children().addClass('highlight');
             } else {
                 
@@ -342,7 +396,7 @@ $(document).ready( function () {
             let selected = $(`#p_${y-value.j}_${x-value.i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if( data_color != 'b' ) {
+            if( data_color != myColor ) {
                 selected.children().addClass('highlight');
             } else {
                 
@@ -355,9 +409,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-rook.movementsTop[i].j}_${x-rook.movementsTop[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -370,9 +424,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-rook.movementsDown[i].j}_${x-rook.movementsDown[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -384,9 +438,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-rook.movementsRight[i].j}_${x-rook.movementsRight[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -398,9 +452,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-rook.movementsLeft[i].j}_${x-rook.movementsLeft[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -416,9 +470,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-bishops.movementsTopRight[i].j}_${x-bishops.movementsTopRight[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -431,9 +485,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-bishops.movementsTopLeft[i].j}_${x-bishops.movementsTopLeft[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -445,9 +499,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-bishops.movementsDownRight[i].j}_${x-bishops.movementsDownRight[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -459,9 +513,9 @@ $(document).ready( function () {
             let selected = $(`#p_${y-bishops.movementsDownLeft[i].j}_${x-bishops.movementsDownLeft[i].i}`);
             //let c = selected.children().attr('data-number');
             let data_color = selected.children().attr('data-color');
-            if ( data_color == 'b' ) {
+            if ( data_color == myColor ) {
                 break;
-            } else if( data_color == 'w' ) {
+            } else if( data_color == opponentColor ) {
                 selected.children().addClass('highlight');
                 break;
             } else if( data_color == '0' ) {
@@ -480,7 +534,7 @@ $(document).ready( function () {
     let GlobalX ;
 
 
-    let showMovements = (data_number,id) => {
+    let showMovements = (data_name,id) => {
         let split = id.split("_");
         //console.log(split);
         //console.log(data_number);
@@ -491,19 +545,19 @@ $(document).ready( function () {
         GlobalY = y;
         GlobalX = x;
 		
-        let num = parseInt(data_number);
+        //let num = parseInt(data_number);
 		
-        if( num == 9823 ) { //Pawn
+        if( data_name == 'pawn' ) { //Pawn
             handlePawnMovements(y,x);
-        } else if ( num == 9818 ) { // King
+        } else if ( data_name == 'king' ) { // King
             handleKingMovements(y,x);
-        } else if ( num == 9822 ) { // Knight
+        } else if ( data_name == 'knight' ) { // Knight
             handleKnightsMovements(y,x);
-        } else if ( num == 9820 ) { // Rook
+        } else if ( data_name == 'rook' ) { // Rook
             handleRookMovements(y,x);
-        } else if ( num == 9821 ) { // Bishops
+        } else if ( data_name == 'bishop' ) { // Bishops
             handleBishopsMovements(y,x);
-        } else if ( num == 9819 ) { // Queen
+        } else if ( data_name == 'queen' ) { // Queen
             handleQueenMovements(y,x);
         }
     }
@@ -525,13 +579,13 @@ $(document).ready( function () {
         let data_color = item.children().attr('data-color');
         let data_number = item.children().attr('data-number');
 		
-        if( data_number != '0' && data_color != 'w') {
+        if( data_number != '0' && data_color == myColor ) {
             replace = !replace;
             first = item;
             //console.log(first);
             item.children().addClass('active');
             showMovements(
-                first.children().attr('data-number'),
+                first.children().attr('data-name'),
                 first.attr('id')
             );
         }
@@ -543,6 +597,21 @@ $(document).ready( function () {
         first = second = null;
         replace = !replace;
     }
+
+
+    let replaceHouses = (y2,x2,y1,x1) => {
+
+        let first = $(`#p_${y2}_${x2}`);
+        let second = $(`#p_${y1}_${x1}`);
+
+        let temp = first.html();
+        first.children().text('');
+        first.children().attr('data-color','0');
+        first.children().attr('data-number','0');
+        first.children().attr('data-name','0');
+
+        second.html(temp); 
+    };
 
 
     let secondClickToMove = (item) => {
@@ -562,11 +631,7 @@ $(document).ready( function () {
                 //console.log(first);
                 //console.log(second);
                 //first.children().removeClass('active');
-                let temp = first.html();
-                first.children().text('');
-                first.children().attr('data-color','0');
-                first.children().attr('data-number','0');
-                second.html(temp); 
+                replaceHouses(GlobalY,GlobalX,y,x);
 
 
                 /*
@@ -602,13 +667,13 @@ $(document).ready( function () {
 
     $(document).on('click','div.cellContainer',function(){
         if(replace == false) {
-            firstClickToMove($(this))
+            firstClickToMove($(this));
         } else {
             secondClickToMove($(this));
         }
     });
 
-    let boardContent = ``;
+    
 
     let chessBoard = [
         [new RookPiece_White(),new KnightPiece_White(),new BishopPiece_White(),new KingPiece_White(),
@@ -630,12 +695,27 @@ $(document).ready( function () {
         []
     ];
 
-    for(let i=0;i<8;i++) {
+    let start,end,incrementer;
+
+    if( myColor == 'b' ) {
+        start = 0;
+        end = 7;
+        incrementer = 1;
+    } else if( myColor == 'w' ) {
+        start = 7;
+        end = 0;
+        incrementer = -1;
+    }
+
+    let boardContent = ``;
+
+    for(let i=start; myColor == 'b' ? i<=end : i >= end ;i+=incrementer) {
         boardContent += `<div class="row">`
-        for(let j=0;j<8;j++) {
+        for(let j=start; myColor == 'b' ? j<=end : j >= end ;j+=incrementer) {
             boardContent += `
             <div id="p_${i}_${j}" class="cellContainer">
             <div 
+            data-name="${chessBoard[i][j].data_name ?? 0}"
             data-number="${chessBoard[i][j].data_number ?? 0}" 
             data-color="${chessBoard[i][j].data_color ?? 0}"
             class="cell">

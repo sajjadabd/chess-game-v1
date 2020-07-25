@@ -6,6 +6,7 @@ body {
     display : flex ;
     justify-content: center;
     align-items: center;
+    position : relative;
 }
 
 div.board {
@@ -19,7 +20,18 @@ div.board {
     border-radius: 20px;
 }
 
-
+header {
+    position : absolute ;
+    top : 0;
+    height : 10vh;
+    width : 100vw;
+    text-align : center;
+    color : white;
+    background-color : black;
+    display : flex;
+    justify-content: center;
+    align-items : center;
+}
 
 div.row {
     display : grid;

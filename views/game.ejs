@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script>
+        myColor = "<%= user.color %>";
+        username = "<%= user.username %>";
+        room = "<%= gameNumber %>";
+    </script>
+    <script src="./socket.io.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <%= gameNumber %> - <%= user.username %> - <%= user.color %>
+    </header>
+
+    <div id="board" class="board">
+        
+    </div>
+    <script src="./jQueryCDN/jquery-3.4.1.min.js"></script>
+    <script src="./code.js"></script>
+</body>
+</html>
