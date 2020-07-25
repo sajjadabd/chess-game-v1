@@ -155,8 +155,12 @@ io.on('connection' , (socket) => {
     
     socket.on('new-user' , (data) => {
         socket.join(data.room);
-        console.log(data);
-        users.push( { id : socket.id , username : data.username , gameNumber : '' } );
+        //console.log(data);
+        users.push( { 
+            id : socket.id , 
+            username : data.username , 
+            gameNumber : data.gameNumber 
+        });
 		console.log(users);
         //socket.to(data.room).emit('numberOfUsers' , { numberOfUsers : games.length } );
         socket.to(data.room).emit( 
@@ -173,8 +177,12 @@ io.on('connection' , (socket) => {
 
     socket.on('messageToServer' , (data) => {
         //console.log(data);
-        socket.to(data.room).broadcast.emit('messageToClient' , 
-            { message : data.message , id : socket.id , username : data.username });
+        socket.to(data.room).broadcast.emit(
+           'messageToClient' , { 
+           message : data.message ,
+           id : socket.id ,
+           username : data.username 
+        });
     });
 
 

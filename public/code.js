@@ -2,13 +2,30 @@ $(document).ready( function () {
 
     console.log(myColor);
 
+    let put = new Audio('./audio/put.mp3');
+    put.volume = 0.5;
+    let recieve = new Audio('./audio/recieve.mp3');
+    recieve.volume = 0.5;
+
+    let yourTurn ;
+
     if( myColor == 'b' ) {
         opponentColor = 'w';
+        yourTurn = false;
     } else if( myColor == 'w' ) {
         opponentColor = 'b';
+        yourTurn = true;
     }
+
+    
 	
-	let socket = io();
+    let socket = io();
+    
+    socket.emit('new-user' , {
+        room : room,
+        username : username,
+        gameNumber : room,
+    });
 
     //socket.emit('new-user', { room : room } );
 
@@ -565,7 +582,7 @@ $(document).ready( function () {
 
     let board = document.getElementById('board');
     
-    let yourTurn = true;
+    
     let replace = false ;
     let first ;
     let second ;
@@ -573,7 +590,7 @@ $(document).ready( function () {
 
     let firstClickToMove = (item) => {
         if(yourTurn == false) {
-            //return;
+            return;
         }
         //console.log(item);
         let data_color = item.children().attr('data-color');
@@ -611,6 +628,10 @@ $(document).ready( function () {
         first.children().attr('data-name','0');
 
         second.html(temp); 
+        second.children().addClass('active');
+        setTimeout( () => {
+            second.children().removeClass('active');
+        } , 1000);
     };
 
 
@@ -632,7 +653,15 @@ $(document).ready( function () {
                 //console.log(second);
                 //first.children().removeClass('active');
                 replaceHouses(GlobalY,GlobalX,y,x);
-
+                put.play();
+                socket.emit('messageToServer' , {
+                    message : {
+                        from : { GlobalY : GlobalY , GlobalX : GlobalX } ,
+                        to : { y : y , x : x } ,
+                    } ,
+                    username : username ,
+                    room : room ,
+                });
 
                 /*
                 set the first move to false
@@ -728,5 +757,16 @@ $(document).ready( function () {
     }
 
     board.innerHTML = boardContent;
+
+
+
+
+    socket.on('messageToClient' , (data) => {
+        recieve.play();
+        replaceHouses(data.message.from.GlobalY,data.message.from.GlobalX,
+                data.message.to.y,data.message.to.x);
+        yourTurn = true;
+    });
+    
 
 });
