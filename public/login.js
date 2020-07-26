@@ -16,6 +16,7 @@ $(document).ready(function() {
 			data : data ,
 			success : function (response) {
 				//return response;
+				console.log(response);
 				if(response.success == true ) {
 					window.location.href = `/${response.gameNumber}`;
 				}

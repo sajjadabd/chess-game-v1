@@ -25,6 +25,7 @@ $(document).ready( function () {
         room : room,
         username : username,
         gameNumber : room,
+        color : myColor
     });
 
     //socket.emit('new-user', { room : room } );
