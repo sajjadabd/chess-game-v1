@@ -1,3 +1,34 @@
+@font-face {
+    font-family : UbuntuBold;
+    src : url(./fonts/Ubuntu/Ubuntu-Bold.ttf);
+}
+
+@font-face {
+    font-family : UbuntuRegular;
+    src : url(./fonts/Ubuntu/Ubuntu-Regular.ttf);
+}
+
+@font-face {
+    font-family : Roboto;
+    src : url(./fonts/Roboto/Roboto-Thin.ttf);
+}
+
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-family : UbuntuBold;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    font-family : UbuntuBold;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    font-family : UbuntuBold;
+}
+:-moz-placeholder { /* Firefox 18- */
+    font-family : UbuntuBold;
+}
+
+
+
 body {
     margin : 0;
     height : 100vh;
@@ -5,269 +36,121 @@ body {
     box-sizing: border-box;
     min-width : 300px;
     
+    background : linear-gradient(to right , brown , chocolate);
     /*
     background : linear-gradient(to right , maroon , chocolate, brown);
 	background : linear-gradient(to right , royalblue , dodgerblue);
 	*/
 }
 
+
+div.container {
+    display : grid;
+    grid-template-rows: 10vh 90vh;
+    grid-template-columns : 1fr;
+    font-family : UbuntuBold;
+    position : relative;
+    box-sizing: border-box;
+}
+
 header {
-    height : 10vh;
-    background : linear-gradient(to right , brown , chocolate);
+    /* background : linear-gradient(to right , brown , chocolate); */
     display: flex;
     justify-content: center;
     color : white;
     font-size : 2em;
-    font-family : Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     align-items : center;
     box-sizing: border-box;
 }
 
-div.background {
-    position : absolute;
-    width : 100%;
-    padding : 2em;
-    box-sizing: border-box;
-    user-select: none;
-    z-index : -2;
-    
-}
 
-div.background div.left {
-    font-size : 5em;
-    position : relative;
-    text-align: left;
-}
-
-div.background div.right {
-    font-size : 5em;
-    position : relative;
-    width : 100%;
-    text-align : right;
-}
-
-
-
-/*
-
-
-*/
 
 div.formContainer {
-    display: flex;
+    /* border : 2px solid red; */
+    display : flex;
     justify-content: center;
     align-items : center;
-    height : 90vh;
-    box-sizing: border-box;
-	--color : black;
 }
 
-form fieldset {
-    margin : 0;
-    padding : 3em;
-    color : var(--color);
-    display : grid;
-    grid-template-areas: 'input input'
-                         'create create'
-                         '. .';
+
+div.formWrapper {
+    background-color : dodgerblue;
+    padding : 1em;
 }
 
-div.inputbox {
-    grid-area : input;
+
+
+form {
+    background-color : brown;
+    border : 2px solid black;
+    padding : 1em;
+    display : flex;
+    flex-direction : column;
+    position : relative;
+    overflow : hidden;
+    --fontSize : 1.2em;
 }
 
-div.createGame {
-    grid-area : create;
-    margin-bottom : 1em;
-}
 
-input#gameNumber {
-    font-size: 1.2em;
-    width : 100px;
-    padding-left : 10px;
-}
 
-form legend {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    padding : 0 1em ;
-    color : var(--color);
-    grid-area : leg;
+form label {
+    padding : 0.5em 1em 0.3em 0;
+    color : white;
+    font-size : var(--fontSize);
 }
 
 form input {
-    display : block;
+    padding : 0.5em 1em;
+    margin-bottom : 0.1em;
+    font-size : var(--fontSize);
 }
 
-/*
-==================================
-*/
-
-div.inputbox {
-    /* border : 1px solid black; */
-    position : relative;
-    margin-bottom : 2em;
-}
-
-input.numberOne {
-    padding : 10px 20px 10px 10px;
-    border : none;
-    border-bottom : 2px solid var(--color); ;
-    outline : none;
-    font-size : 1.4em;
-    font-family : Georgia, 'Times New Roman', Times, serif;
-    position : relative;
-    background-color: transparent;
-    color : var(--color);
-}
-
-div.inputbox::before {
-    content: ' ';
-    position: absolute;
-    border-width : 2px;
-    border-style: solid;
-    border-color : transparent var(--color) transparent transparent ;
-    width : 2px;
-    height : 0px;
-    bottom : 0;
-    right : 0;
-    z-index : 1;
-    transition: 0.5s;
-}
-
-div.inputbox::after {
-    content : ' ';
-    border-width : 2px;
-    border-style: solid;
-    border-color : transparent transparent transparent var(--color);
-    position : absolute;
-    bottom : 0;
-    left : 0;
-    width : 2px;
-    height : 10px;
-    transition: 0.5s;
-}
-
-div.inputbox:focus-within::after {
-    height : 70%;
-    transition: 0.5s;
-}
-
-div.inputbox:focus-within::before {
-    height : 30%;
-    transition: 0.5s;
-}
-
-
-
-div.placeholder {
-    color : var(--color);
-    opacity: 0.5;
-    position : absolute;
-    font-size : 15px;
-    font-family : Georgia, 'Times New Roman', Times, serif;
-    top : 50%;
-    left : 10px;
-    transform: translateY(-50%);
-    transition : 0.5s;
-}
-
-div.littleholder {
-    top : -10px;
-    font-size : 12px;
-    opacity: 1;
-    transition : 0.5s;
-}
-
-
-/*
-========================
-*/
-
-button {
-    font-size : 1.2em;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    text-transform: uppercase;
-    border : none;
-    outline : none;
-    padding : 10px 20px;
-    cursor : pointer;
-    color : black;
-    transition : 0.2s;
-    position : relative;
-    width : 100%;
-    --offset : 0px;
-    --delay : 1s;
-    --effectColor : chocolate;
-    overflow : hidden;
-}
-
-button::before {
-    content : ' ';
-    border-width : 2px 0 0 2px ;
-    border-style : solid;
-    border-color : var(--effectColor);
-    position : absolute;
-    top : var(--offset);
-    left : var(--offset);
-    width : 10px;
-    height : 10px;
-    z-index : 2;
-    transition : var(--delay);
-}
-
-button::after {
-    content : ' ';
-    border-width : 0 2px 2px 0  ;
-    border-style : solid;
-    border-color : var(--effectColor);
-    position : absolute;
-    bottom : var(--offset);
-    right : var(--offset);
-    width : 10px;
-    height : 10px;
-    z-index : 2;
-    transition : var(--delay);
-}
-
-button:hover {
+form button {
+    padding : 0.5em 1em;
     background : transparent;
-    color : var(--color);
+    border : 2px solid black;
+    outline : 0;
+    color : white;
+    position : relative;
+    cursor : pointer;
+    margin-top : 0.5em;
+    font-size : var(--fontSize);
+}
+
+form button:active {
+    bottom : -1px;
 }
 
 
-button:hover::before {
-    width : 100%;
-    height : 100%;
-    transition : var(--delay);
+div.icon {
+    color : white;
+    position : absolute;
+    right : 0;
+    top : 0;
+    transform : rotate(45deg) translateX(0.7em) translateY(-2.9em);
+    background-color: red;
+    padding : 2em 2em 0 2em ;
+    transition : 0.3s;
+    cursor : pointer;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-button:hover::after {
-    width : 100%;
-    height : 100%;
-    transition : var(--delay);
+div.icon:hover {
+    transform : rotate(45deg) translateX(0.7em) translateY(-2.9em) scale(1.2);
+}
+
+div.gamepad {
+    transform : rotate(45deg) translateX(0.5em) translateY(-2.9em);
 }
 
 
-button:active {
-    background : rgb(206, 194, 194);
+div.gamepad:hover {
+    transform : rotate(45deg) translateX(0.5em) translateY(-2.9em) scale(1.2);
 }
 
-/*
-========================================
-*/
-
-
-
-
-
-
-@media only screen and (max-width : 700px) {
-    div.background div.left {
-        font-size : 2em;
-    }
-
-    div.background div.right {
-        font-size : 2em;
-    }
-
+div.icon div.textHint {
+    font-size : 10px;
 }

@@ -4,46 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="./loginBoard.css" />
     <link rel="stylesheet" href="./login.css" />
+
     <title>Login</title>
 </head>
 <body>
-    <header>
-      ChessPlus
-    </header>
 
-    <div class="background">
-        <!-- <div class="left">&#128172;</div>
-        <div class="right">&#128149;</div>
-        <div class="left">&#128525;</div>
-        <div class="right">&#128521;</div>
-        <div class="left">&#128172;</div> -->
+    <div id="board" class="board">
     </div>
 
-    <div class="formContainer">
-      <form id="mainForm" action="/createGame" method="post">
-        <fieldset>
+    <div class="container">
+      <header>
+        ChessPlus
+      </header>
+  
+      
+  
+      <div class="formContainer">
+  
+        <div class="formWrapper">
+          <form id="createGameForm" action="/createGame" method="post">
+              <div class="icon gamepad" id="goToJoin">
+                <i class="fa fa-gamepad" aria-hidden="true"></i>
+                <div class="textHint">Join</div>
+              </div>
+              <label for="username">Username</label>
+              <input class="numberOne" placeholder="Username" name="username" type="text" autocomplete="off" autofocus/>
+              <button id="createGame">create game</button>
+          </form>
+    
+          <form style="display:none;" id="joinGameForm" action="/joinGame" method="post">
+              <div class="icon" id="goToCreate">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                <div class="textHint">Create</div>
+              </div>
+              <label for="username">Username</label>
+              <input class="numberOne" placeholder="Username" name="username" type="text" autocomplete="off" autofocus/>
+              <input type="text" name="gameNumber" placeholder="Code" autocomplete="off">
+              <button id="joinGame">join game</button>
+          </form>
+        </div>
 
-          <div id="username_inputbox" class="inputbox">
-            <input class="numberOne" id="username" name="username" type="text" autocomplete="off" autofocus/>
-            <div id="username_placeholder" class="placeholder">Username</div>
-          </div>
+      </div>
 
-          <div class="createGame">
-            <button id="createGame">create game</button>
-          </div>
-          
-
-          
-          <input type="text" id="gameNumber" name="gameNumber" placeholder="Code" autocomplete="off">
-          <button id="joinGame">join game</button>
-          
-        </fieldset>
-      </form> 
     </div>
 
     
+
+    
     <script src="./jQueryCDN/jquery-3.4.1.min.js"></script>
+    <script src="./loginBoard.js"></script>
     <script src="./login.js"></script>
 </body>
 </html>

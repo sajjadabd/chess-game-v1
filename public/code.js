@@ -768,6 +768,28 @@ $(document).ready( function () {
                 data.message.to.y,data.message.to.x);
         yourTurn = true;
     });
+
+
+
+    socket.on('status' , (data) => {
+
+        console.log(data);
+
+        roomUsers = data.username;
+
+        roomUsers = roomUsers.filter((value,index) => {
+            return value.username != username;
+        });
+
+        console.log(roomUsers);
+
+        
+        let opponentHTML = `
+        ${roomUsers[0].username} <i class="fa fa-check" aria-hidden="true"></i>
+        `
+        $('#opponent').html(opponentHTML);
+        
+    });
     
 
 });

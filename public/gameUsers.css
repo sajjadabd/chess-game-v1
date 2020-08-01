@@ -1,0 +1,52 @@
+@font-face {
+    font-family : UbuntuBold;
+    src : url(./fonts/Ubuntu/Ubuntu-Bold.ttf);
+}
+
+@font-face {
+    font-family : UbuntuRegular;
+    src : url(./fonts/Ubuntu/Ubuntu-Regular.ttf);
+}
+
+@font-face {
+    font-family : Roboto;
+    src : url(./fonts/Roboto/Roboto-Thin.ttf);
+}
+
+
+div.me , div.opponent {
+    background-color : white;
+    color : black;
+    position : absolute;
+    left : 0;
+    margin : 0.5em;
+    padding : 0.5em 1em;
+    font-family : UbuntuBold;
+    border-radius : 20px;
+}
+
+div.me {
+    bottom : 0;
+}
+
+
+div.opponent {
+    top : 0;
+}
+
+i.fa-check {
+    color : green;
+}
+
+i.fa-spinner{
+    animation : 1s linear rotation infinite;
+}
+
+@keyframes rotation {
+    0%{
+        transform : rotate(0deg);
+    }
+    100% {
+        transform : rotate(360deg);
+    }
+}

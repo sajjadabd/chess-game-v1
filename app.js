@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(express.urlencoded({ extended : true }));
 
 
-const server = app.listen(port , () => {
+const server = app.listen( port , () => {
     console.log(`listening at port ${port}`);
 });
 
@@ -101,6 +101,15 @@ isUserinGame = (username , gameNumber) => {
     //console.log(`user is in position ${index}`);
 
     return (index >= 0 && result >= 0) ? true : false;
+}
+
+
+returnRoomUsers = (gameNumber) => {
+    let result = games.findIndex( (value,index) => {
+        return value.gameNumber == gameNumber;
+    });
+
+    return games[result].users;
 }
 
 
@@ -207,6 +216,17 @@ app.get('/:gameNumber' , (req,res) => {
         return value.gameNumber == req.params.gameNumber;
     });
 
+    let opponent ;
+
+    if ( games[result].users != undefined ) {
+        opponent = games[result].users.filter((value,index) => {
+            return value.username != req.session.user
+        });
+        console.log('opponent : ');
+        console.log(opponent);
+    }
+    
+
     //console.log(result);
 
     if(result < 0) {
@@ -215,11 +235,11 @@ app.get('/:gameNumber' , (req,res) => {
         //printGames();
         return res.render('game', { 
             gameNumber : req.params.gameNumber , 
-            user : req.session.user 
+            user : req.session.user ,
+            opponent : opponent,
         });
     }
 
-    
 });
 
 changeGamesBasedOnUserLength = (gameIndex,whichUser) => {
@@ -258,7 +278,7 @@ io.on('connection' , (socket) => {
         if(userIndex >= 0) {
             users[userIndex].id = socket.id;
         } else {
-            users.push( { 
+            users.push({ 
                 id : socket.id , 
                 username : data.username , 
                 gameNumber : data.gameNumber 
@@ -277,15 +297,16 @@ io.on('connection' , (socket) => {
 
         printGames();
         printUsers();
+
+        let roomUsers = returnRoomUsers(data.room);
         
 		//console.log(users);
         //socket.to(data.room).emit('numberOfUsers' , { numberOfUsers : games.length } );
-        socket.to(data.room).emit( 
-		'status' , 
+        socket.to(data.room).emit('status', 
 		{ 
-			status : 'connected' , 
-			id : socket.id , 
-			username : data.username 
+			status : 'connected', 
+			id : socket.id, 
+			username : roomUsers//data.username 
 		});
     })
 
