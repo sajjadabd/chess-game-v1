@@ -166,18 +166,37 @@ app.post('/joinGame' , (req , res) => {
 
     if(result < 0) {
         return res.json({ noSuchGame : true , success : false });
-    } else { //if ( games[result].users.length < 2 ) { // in joinGame it shoud be less than
+    } else if ( games[result].users.length < 2 ) { // in joinGame it shoud be less than
         
-        //if( !req.session.user ) {
-        req.session.user = {
-            username : req.body.username,
-            color : 'w'
-        };
-
-        games[result].users.push({
-            username : req.body.username ,
-            color : 'w',
+        let getColor =  games[result].users.findIndex( (value,index) => {
+            return value.color == 'b';
         });
+
+        console.log(`color index : ${getColor}`);
+
+        if ( getColor < 0 ) {
+            req.session.user = {
+                username : req.body.username,
+                color : 'b'
+            };
+    
+            games[result].users.push({
+                username : req.body.username ,
+                color : 'b'
+            });
+        } else {
+            req.session.user = {
+                username : req.body.username,
+                color : 'w'
+            };
+    
+            games[result].users.push({
+                username : req.body.username ,
+                color : 'w'
+            });
+        }
+        //if( !req.session.user ) {
+        
 
         //console.log(games);
         return res.json({ gameNumber : req.body.gameNumber , success : true });
