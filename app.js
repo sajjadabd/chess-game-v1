@@ -119,9 +119,9 @@ app.post('/createGame' , (req,res) => {
 
     if(req.body.username == '') {
         return res.json({ success : false });
-    } else if ( thereIsSuchUser(req.body.username) ) {
+    }/* else if ( thereIsSuchUser(req.body.username) ) {
         return res.json({ success : false });
-    }
+    }*/
 
     
     
@@ -154,9 +154,10 @@ app.post('/joinGame' , (req , res) => {
 
     if(req.body.username == '') {
         return res.json({ username : 'empty' , success : false });
-    } else if ( isUserinGame(req.body.username,req.body.gameNumber) ) {
+    } 
+    /* else if ( isUserinGame(req.body.username,req.body.gameNumber) ) {
         return res.json({ userAlreadyExistsInGame : true , success : false });
-    }
+    }*/
 
     let result = games.findIndex( (value,index) => {
         return value.gameNumber == req.body.gameNumber;
@@ -165,27 +166,26 @@ app.post('/joinGame' , (req , res) => {
 
     if(result < 0) {
         return res.json({ noSuchGame : true , success : false });
-    } else if ( games[result].users.length < 2 ) { // in joinGame it shoud be less than
+    } else { //if ( games[result].users.length < 2 ) { // in joinGame it shoud be less than
         
         //if( !req.session.user ) {
-            req.session.user = {
-                username : req.body.username,
-                color : 'w'
-            };
+        req.session.user = {
+            username : req.body.username,
+            color : 'w'
+        };
 
-            games[result].users.push({
-                username : req.body.username ,
-                color : 'w',
-            });
+        games[result].users.push({
+            username : req.body.username ,
+            color : 'w',
+        });
 
-            //console.log(games);
-            return res.json({ gameNumber : req.body.gameNumber , success : true });
+        //console.log(games);
+        return res.json({ gameNumber : req.body.gameNumber , success : true });
         //} else {
         //    return res.json({ success : false });
         //}
-    } else {
-        return res.json({ forbidden : true , success : false });
-    }
+    }  
+    // return res.json({ forbidden : true , success : false });
 });
 
 
@@ -245,13 +245,13 @@ changeGamesBasedOnUserLength = (gameIndex,whichUser) => {
     games[gameIndex].users = games[gameIndex].users.filter( (value,index) => {
         return value.username != whichUser.username;
     });
-
-    if( games[gameIndex].users == 0 ) {
+    /*
+    if( games[gameIndex].users.length == 0 ) {
         games = games.filter( (value , index) => {
             return gameIndex != index;
         });
     }
-    
+    */
 }
 
 
@@ -290,7 +290,7 @@ io.on('connection' , (socket) => {
 
         let roomUsers = returnRoomUsers(data.room);
         
-		socket.to(data.room).emit('status', 
+		socket.to(data.room).broadcast.emit('status', 
 		{ 
 			status : 'connected', 
 			id : socket.id, 
@@ -316,23 +316,47 @@ io.on('connection' , (socket) => {
 
     socket.on('disconnect' , () => {
 
-        /*
-        whichUser = users.find( (value,index) => {
+        //let roomUsers = returnRoomUsers(data.room);
+
+        whichUser = users.find((value,index) => {
             return value.id == socket.id;
         });
+        
+        if(whichUser != undefined ) {
+            socket.to(whichUser.gameNumber).broadcast.emit('status', 
+            { 
+                status : 'disconnected', 
+                id : socket.id
+                //username : roomUsers //data.username 
+            });
+        }
+
+        if(whichUser != undefined ) {
+            let gameIndex = games.findIndex((value,index) => {
+                return value.gameNumber == whichUser.gameNumber;
+            });
+            changeGamesBasedOnUserLength(gameIndex,whichUser);
+        }
 
         users = users.filter( (value,index) => {
             return value.id != socket.id;
         });
         
+        
+
+        printGames();
+        printUsers();
+        /*
+        whichUser = users.find( (value,index) => {
+            return value.id == socket.id;
+        });
+
         let gameIndex = games.findIndex((value,index) => {
             return value.gameNumber == whichUser.gameNumber;
         });
 
         changeGamesBasedOnUserLength(gameIndex,whichUser);
 
-        
-        
         printGames();
         printUsers();
         */

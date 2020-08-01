@@ -774,19 +774,29 @@ $(document).ready( function () {
     socket.on('status' , (data) => {
 
         console.log(data);
-
+        let opponentHTML;
         roomUsers = data.username;
 
-        roomUsers = roomUsers.filter((value,index) => {
-            return value.username != username;
-        });
-
-        console.log(roomUsers);
+        if ( data.status == 'connected' ) {
+            roomUsers = roomUsers.filter((value,index) => {
+                return value.username != username;
+            });
+    
+            console.log(roomUsers);
+    
+            
+            opponentHTML = `
+            ${roomUsers[0].username} <i class="fa fa-check" aria-hidden="true"></i>
+            `;
+        } else {
+            opponentHTML = `
+            waiting for opponent <i class="fa fa-spinner" aria-hidden="true"></i>
+            `;
+        }
 
         
-        let opponentHTML = `
-        ${roomUsers[0].username} <i class="fa fa-check" aria-hidden="true"></i>
-        `
+
+
         $('#opponent').html(opponentHTML);
         
     });
