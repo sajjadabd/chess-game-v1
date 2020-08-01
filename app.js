@@ -97,9 +97,6 @@ isUserinGame = (username , gameNumber) => {
         });
     }
 
-    //console.log(`user is in game ${result}`);
-    //console.log(`user is in position ${index}`);
-
     return (index >= 0 && result >= 0) ? true : false;
 }
 
@@ -119,8 +116,6 @@ app.get('/' , (req,res) => {
 
 
 app.post('/createGame' , (req,res) => {
-    //console.log(req.body);
-    //res.json({ username : req.body.username });
 
     if(req.body.username == '') {
         return res.json({ success : false });
@@ -217,22 +212,25 @@ app.get('/:gameNumber' , (req,res) => {
     });
 
     let opponent ;
+    //console.log(`session user : ${req.session.user.username}`);
+    if( games[result] != undefined ) {
+        if ( games[result].users != undefined ) {
+            opponent = games[result].users.filter((value,index) => {
+                return value.username != req.session.user.username;
+            });
+            console.log('opponent : ');
+            console.log(opponent);
 
-    if ( games[result].users != undefined ) {
-        opponent = games[result].users.filter((value,index) => {
-            return value.username != req.session.user
-        });
-        console.log('opponent : ');
-        console.log(opponent);
+            opponent = opponent[0];
+        }
     }
     
 
-    //console.log(result);
 
     if(result < 0) {
         return res.redirect('/');
     } else { 
-        //printGames();
+  
         return res.render('game', { 
             gameNumber : req.params.gameNumber , 
             user : req.session.user ,
@@ -243,11 +241,7 @@ app.get('/:gameNumber' , (req,res) => {
 });
 
 changeGamesBasedOnUserLength = (gameIndex,whichUser) => {
-    /*
-    let userIndexInGame = games[gameIndex].users.findIndex( (value,index) => {
-        return value.username == whichUser.username;
-    });
-    */
+
     games[gameIndex].users = games[gameIndex].users.filter( (value,index) => {
         return value.username != whichUser.username;
     });
@@ -257,9 +251,6 @@ changeGamesBasedOnUserLength = (gameIndex,whichUser) => {
             return gameIndex != index;
         });
     }
-
-    //console.log(`users length : ${games[gameIndex].users.length}`);
-
     
 }
 
@@ -271,7 +262,6 @@ io.on('connection' , (socket) => {
     
     socket.on('new-user' , (data) => {
         socket.join(data.room);
-        //console.log(data);
 
         let userIndex = returnUserIndex(data.username);
 
@@ -279,11 +269,11 @@ io.on('connection' , (socket) => {
             users[userIndex].id = socket.id;
         } else {
             users.push({ 
-                id : socket.id , 
-                username : data.username , 
+                id : socket.id, 
+                username : data.username, 
                 gameNumber : data.gameNumber 
             });
-
+            
             let gameIndex = returnGameIndex(data.gameNumber);
 
             if ( !isUserinGame(data.username , data.gameNumber) ) {
@@ -300,13 +290,11 @@ io.on('connection' , (socket) => {
 
         let roomUsers = returnRoomUsers(data.room);
         
-		//console.log(users);
-        //socket.to(data.room).emit('numberOfUsers' , { numberOfUsers : games.length } );
-        socket.to(data.room).emit('status', 
+		socket.to(data.room).emit('status', 
 		{ 
 			status : 'connected', 
 			id : socket.id, 
-			username : roomUsers//data.username 
+			username : roomUsers //data.username 
 		});
     })
 
@@ -314,27 +302,24 @@ io.on('connection' , (socket) => {
     
 
     socket.on('messageToServer' , (data) => {
-        //console.log(data);
+
         socket.to(data.room).broadcast.emit(
            'messageToClient' , { 
            message : data.message ,
            id : socket.id ,
            username : data.username 
         });
+
     });
 
 
 
     socket.on('disconnect' , () => {
 
+        /*
         whichUser = users.find( (value,index) => {
             return value.id == socket.id;
         });
-
-        // console.log('----');
-        // console.log('whichUser');
-        // console.log(whichUser);
-        // console.log('----');
 
         users = users.filter( (value,index) => {
             return value.id != socket.id;
@@ -344,35 +329,18 @@ io.on('connection' , (socket) => {
             return value.gameNumber == whichUser.gameNumber;
         });
 
-        //console.log(`game index : ${gameIndex}`);
-
         changeGamesBasedOnUserLength(gameIndex,whichUser);
 
         
         
         printGames();
         printUsers();
-        //console.log(users);
-        
-        // let result = users.findIndex( (value,index) => {
-        //     return value.id == socket.id;
-        // });
+        */
 
-        // let username = users[result].username;
-
-        // socket.to(data.room).emit( 'numberOfUsers' , { numberOfUsers : users.length });
-        // socket.to(data.room).emit( 
-		// 'status' , 
-		// { 
-		// 	status : 'disconnected' , 
-		// 	id : socket.id , 
-		// 	username : data.username 
-		// });
     });
 	
 
     socket.on('searchUsers' , (data) => {
-        //console.log(value);
         let result = users.filter( (value) => {
             return value.username == data.searchInput;
         });

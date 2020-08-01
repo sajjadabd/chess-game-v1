@@ -790,6 +790,22 @@ $(document).ready( function () {
         $('#opponent').html(opponentHTML);
         
     });
+
+    checkForOpponent = () => {
+        if ( opponent == undefined ) {
+            $('#opponent').html(`
+            waiting for opponent
+            <i class="fa fa-spinner" aria-hidden="true"></i>
+            `);
+        } else {
+            $('#opponent').html(`
+            ${opponent}
+            <i class="fa fa-check" aria-hidden="true"></i>
+            `);
+        }
+    }
+
+    checkForOpponent();
     
 
 });
