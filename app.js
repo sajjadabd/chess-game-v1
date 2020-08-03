@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const path = require('path');
 const port = process.env.PORT || 8080;
 
+const pieces = require('./pieces');
+
 const app = express();
 
 //app.use(morgan('combined'));
@@ -39,6 +41,8 @@ printGames = () => {
         value.users.map( (v,i) => {
             console.log(v);
         });
+		console.log(`board :`);
+		//console.log(value.board);
     });
     console.log('========================');
 }
@@ -141,7 +145,21 @@ app.post('/createGame' , (req,res) => {
         users : [ {
             username : req.body.username ,
             color : 'b'
-        }] 
+        }] , 
+		board : [
+			[new pieces.RookPiece_White(),new pieces.KnightPiece_White(),new pieces.BishopPiece_White(),new pieces.KingPiece_White(),
+			new pieces.QueenPiece_White(),new pieces.BishopPiece_White(),new pieces.KnightPiece_White(),new pieces.RookPiece_White()],
+			[new pieces.PawnPiece_White(),new pieces.PawnPiece_White(),new pieces.PawnPiece_White(),new pieces.PawnPiece_White(),
+			new pieces.PawnPiece_White(),new pieces.PawnPiece_White(),new pieces.PawnPiece_White(),new pieces.PawnPiece_White()],
+			[0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0],
+			[new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),
+			new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black()],
+			[new pieces.RookPiece_Black(),new pieces.KnightPiece_Black(),new pieces.BishopPiece_Black(),new pieces.KingPiece_Black(),
+			new pieces.QueenPiece_Black(),new pieces.BishopPiece_Black(),new pieces.KnightPiece_Black(),new pieces.RookPiece_Black()],
+		]
     });
     
 	return res.json({ gameNumber : newGame , success : true });
@@ -229,6 +247,7 @@ app.get('/:gameNumber' , (req,res) => {
     let result = games.findIndex( (value,index) => {
         return value.gameNumber == req.params.gameNumber;
     });
+	
 
     let opponent ;
     //console.log(`session user : ${req.session.user.username}`);
@@ -249,11 +268,11 @@ app.get('/:gameNumber' , (req,res) => {
     if(result < 0) {
         return res.redirect('/');
     } else { 
-  
         return res.render('game', { 
-            gameNumber : req.params.gameNumber , 
-            user : req.session.user ,
+            gameNumber : req.params.gameNumber, 
+            user : req.session.user,
             opponent : opponent,
+			board : games[result].board,
         });
     }
 
@@ -308,19 +327,49 @@ io.on('connection' , (socket) => {
         printUsers();
 
         let roomUsers = returnRoomUsers(data.room);
+		
+		let gameIndex = returnGameIndex(data.room);
         
 		socket.to(data.room).broadcast.emit('status', 
 		{ 
 			status : 'connected', 
 			id : socket.id, 
-			username : roomUsers //data.username 
+			username : roomUsers, //data.username 
+			
 		});
+		
+		
+		
+		
+		socket.emit('response-new-user' , {
+			board : games[gameIndex].board,
+		})
     })
 
     
     
 
     socket.on('messageToServer' , (data) => {
+		
+		let GlobalY = data.message.from.GlobalY;
+		let GlobalX = data.message.from.GlobalX;
+		let y = data.message.to.y;
+		let x = data.message.to.x;
+		//data.room == gameNumber
+		
+		let gameIndex = returnGameIndex(data.room);
+		/*
+		set the first move to false
+		*/
+		games[gameIndex].board[GlobalY][GlobalX].first_move = false;
+		/*
+		swap chess pieces in 2D array
+		*/
+		//console.log(chessBoard[y][x]);
+		//console.log(chessBoard[GlobalY][GlobalX]);
+		games[gameIndex].board[y][x] = games[gameIndex].board[GlobalY][GlobalX];
+		games[gameIndex].board[GlobalY][GlobalX] = 0;
+		
 
         socket.to(data.room).broadcast.emit(
            'messageToClient' , { 

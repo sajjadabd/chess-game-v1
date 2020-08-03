@@ -655,6 +655,7 @@ $(document).ready( function () {
                 //first.children().removeClass('active');
                 replaceHouses(GlobalY,GlobalX,y,x);
                 put.play();
+				
                 socket.emit('messageToServer' , {
                     message : {
                         from : { GlobalY : GlobalY , GlobalX : GlobalX } ,
@@ -702,9 +703,62 @@ $(document).ready( function () {
             secondClickToMove($(this));
         }
     });
+	
+	let chessBoard = [];
+	let start,end,incrementer;
+	
+	
+	setTheBoardForTheUser = (data) => {
+		console.log(data);
+		
+		chessBoard = data.board;
+		
+		if( myColor == 'b' ) {
+			start = 0;
+			end = 7;
+			incrementer = 1;
+		} else if( myColor == 'w' ) {
+			start = 7;
+			end = 0;
+			incrementer = -1;
+		}
 
+		let boardContent = ``;
+
+		for(let i=start; myColor == 'b' ? i<=end : i >= end ;i+=incrementer) {
+			boardContent += `<div class="row">`
+			for(let j=start; myColor == 'b' ? j<=end : j >= end ;j+=incrementer) {
+				boardContent += `
+				<div id="p_${i}_${j}" class="cellContainer">
+				<div 
+				data-name="${chessBoard[i][j].data_name ?? 0}"
+				data-number="${chessBoard[i][j].data_number ?? 0}" 
+				data-color="${chessBoard[i][j].data_color ?? 0}"
+				class="cell">
+				${chessBoard[i][j].data_number == undefined ? `` : `&#${chessBoard[i][j].data_number};` }
+				</div>
+				</div>
+				`
+			}
+			boardContent += `</div>`;
+		}
+
+		board.innerHTML = boardContent;
+	}
+	
+	
+	socket.on( 'response-new-user' , (data) => {
+		setTheBoardForTheUser(data);
+	});
+	
     
-
+	
+	//chessBoard
+	
+	//console.log(boardLoadFromServer);
+	
+	//console.log(chessBoard);
+	/*
     let chessBoard = [
         [new RookPiece_White(),new KnightPiece_White(),new BishopPiece_White(),new KingPiece_White(),
         new QueenPiece_White(),new BishopPiece_White(),new KnightPiece_White(),new RookPiece_White()],
@@ -719,45 +773,17 @@ $(document).ready( function () {
         [new RookPiece_Black(),new KnightPiece_Black(),new BishopPiece_Black(),new KingPiece_Black(),
         new QueenPiece_Black(),new BishopPiece_Black(),new KnightPiece_Black(),new RookPiece_Black()],
     ];
-
+	*/
+	/*
     let bottomPieces = [
         [],
         []
     ];
+	*/
+	
+    
 
-    let start,end,incrementer;
-
-    if( myColor == 'b' ) {
-        start = 0;
-        end = 7;
-        incrementer = 1;
-    } else if( myColor == 'w' ) {
-        start = 7;
-        end = 0;
-        incrementer = -1;
-    }
-
-    let boardContent = ``;
-
-    for(let i=start; myColor == 'b' ? i<=end : i >= end ;i+=incrementer) {
-        boardContent += `<div class="row">`
-        for(let j=start; myColor == 'b' ? j<=end : j >= end ;j+=incrementer) {
-            boardContent += `
-            <div id="p_${i}_${j}" class="cellContainer">
-            <div 
-            data-name="${chessBoard[i][j].data_name ?? 0}"
-            data-number="${chessBoard[i][j].data_number ?? 0}" 
-            data-color="${chessBoard[i][j].data_color ?? 0}"
-            class="cell">
-            ${chessBoard[i][j].data_number == undefined ? `` : `&#${chessBoard[i][j].data_number};` }
-            </div>
-            </div>
-            `
-        }
-        boardContent += `</div>`;
-    }
-
-    board.innerHTML = boardContent;
+    
 
 
 
@@ -794,10 +820,10 @@ $(document).ready( function () {
             `;
         }
 
-        
-
-
         $('#opponent').html(opponentHTML);
+		
+		
+		
         
     });
 
