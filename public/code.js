@@ -11,11 +11,26 @@ $(document).ready( function () {
 
     if( myColor == 'b' ) {
         opponentColor = 'w';
-        yourTurn = false;
     } else if( myColor == 'w' ) {
         opponentColor = 'b';
-        yourTurn = true;
     }
+	
+	
+	
+	if ( turn == 'b' ) {
+		if ( myColor == 'b' ) {
+			yourTurn = true;
+		} else if( myColor == 'w' ) {
+			yourTurn = false;
+		}
+	} else if ( turn == 'w' ) {
+		if ( myColor == 'b' ) {
+			yourTurn = false;
+		} else if( myColor == 'w' ) {
+			yourTurn = true;
+		}
+	}
+
 
     
 	

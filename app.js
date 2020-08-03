@@ -41,7 +41,7 @@ printGames = () => {
         value.users.map( (v,i) => {
             console.log(v);
         });
-		console.log(`board :`);
+		//console.log(`board :`);
 		//console.log(value.board);
     });
     console.log('========================');
@@ -159,7 +159,8 @@ app.post('/createGame' , (req,res) => {
 			new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black(),new pieces.PawnPiece_Black()],
 			[new pieces.RookPiece_Black(),new pieces.KnightPiece_Black(),new pieces.BishopPiece_Black(),new pieces.KingPiece_Black(),
 			new pieces.QueenPiece_Black(),new pieces.BishopPiece_Black(),new pieces.KnightPiece_Black(),new pieces.RookPiece_Black()],
-		]
+		],
+		turn : 'w',
     });
     
 	return res.json({ gameNumber : newGame , success : true });
@@ -273,6 +274,7 @@ app.get('/:gameNumber' , (req,res) => {
             user : req.session.user,
             opponent : opponent,
 			board : games[result].board,
+			turn : games[result].turn,
         });
     }
 
@@ -370,6 +372,15 @@ io.on('connection' , (socket) => {
 		games[gameIndex].board[y][x] = games[gameIndex].board[GlobalY][GlobalX];
 		games[gameIndex].board[GlobalY][GlobalX] = 0;
 		
+		
+		/*
+		Flip Turn
+		*/
+		if ( games[gameIndex].turn == 'w' ) {
+			games[gameIndex].turn = 'b';
+		} else if ( games[gameIndex].turn == 'b' ) {
+			games[gameIndex].turn = 'w';
+		}
 
         socket.to(data.room).broadcast.emit(
            'messageToClient' , { 
